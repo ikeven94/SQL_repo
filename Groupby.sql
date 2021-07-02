@@ -1,0 +1,44 @@
+- GROUP BY -
+
+[고양이와 개는 몇 마리 있을까]
+
+  SELECT ANIMAL_TYPE
+       , COUNT(*) 
+    FROM ANIMAL_INS
+   WHERE ANIMAL_TYPE IN ('Cat','Dog')
+GROUP BY ANIMAL_TYPE
+ORDER BY 1
+
+
+
+[동명 동물 수 찾기]
+
+  SELECT NAME
+       , COUNT(NAME) as CNT
+    FROM ANIMAL_INS
+GROUP BY NAME
+  HAVING CNT >= 2
+ORDER BY NAME
+
+
+
+[입양 시각 구하기(1)]
+
+  SELECT HOUR(DATETIME) as HOUR, COUNT(DATETIME) as COUNT
+    FROM ANIMAL_OUTS
+   WHERE HOUR(DATETIME) >= 9
+     AND HOUR(DATETIME) <= 19
+GROUP BY HOUR(DATETIME)
+ORDER BY HOUR(DATETIME);
+
+
+
+[입양 시각 구하기(2)]
+
+SET @hour := -1;
+SELECT (@hour := @hour + 1) AS "HOUR",
+       (SELECT COUNT(*)
+          FROM ANIMAL_OUTS
+         WHERE HOUR(DATETIME) = @hour) AS "COUNT"
+FROM animal_outs
+WHERE @hour < 23;
